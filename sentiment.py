@@ -49,17 +49,23 @@ text_data = data['text']
 # make tweets all lower case
 text_lower = text_data.str.lower()
 
-# Strip punctuation, newline character, and retweet from tweets
+# Strip punctuation, newline character from tweets
 for i in range(len(text_lower)):
     for p in list(punctuation):
         text_lower[i] = text_lower[i].replace(p,"")
         text_lower[i] = text_lower[i].replace('\n',"")
-        text_lower[i] = text_lower[i].replace('rt',"")
+
+# Remove retweets to reduce duplicates
+for i in range(len(text_lower)):
+    if text_lower[i][0:2] == 'rt':
+        text_lower = text_lower.drop(i)
 
 # Convert processed tweets to list
 final_text = text_lower.values.tolist()
 pos_val = []
 neg_val = []
+
+# classify words as positive or negative (neutral if not in list)
 for i in range(len(text_lower)):
     pos_counter = 0
     neg_counter = 0
